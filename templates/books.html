@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Books</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h1>Your Books</h1>
+    
+    <!-- Form to add a new book -->
+    <h2>Add a New Book</h2>
+    <form id="addBookForm" method="POST" onsubmit="return addBook(event)">
+        <label for="title">Title:</label>
+        <input type="text" id="title" name="title" required>
+        
+        <label for="author">Author:</label>
+        <input type="text" id="author" name="author" required>
+        
+        <label for="genre">Genre:</label>
+        <input type="text" id="genre" name="genre" required>
+        
+        <label for="year">Publication Year:</label>
+        <input type="number" id="year" name="year" required>
+        
+        <button type="submit">Add Book</button>
+    </form>
+
+    <!-- Section to display existing books -->
+    <h2>Existing Books</h2>
+    <ul id="booksList">
+        <!-- List of books will be populated here -->
+    </ul>
+
+    <script>
+        async function addBook(event) {
+    event.preventDefault();
+
+    const title = document.getElementById('title').value;
+    const author = document.getElementById('author').value;
+    const genre = document.getElementById('genre').value;
+    const year = document.getElementById('year').value;
+
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('User is not authenticated.');
+        return;
+    }
+
+    const response = await fetch('/api/books', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ title, author, genre, year })
+    });
+
+    if (response.ok) {
+        alert('Book added successfully!');
+        loadBooks();
+    } else {
+        alert('Failed to add the book. Unauthorized.');
+    }
+}
+
+async function loadBooks() {
+    const token = localStorage.getItem('token');
+    if (!token) {
+        alert('User is not authenticated.');
+        return;
+    }
+
+    const response = await fetch('/api/books', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
+
+    if (response.ok) {
+        const books = await response.json();
+        const booksList = document.getElementById('booksList');
+        booksList.innerHTML = '';
+
+        books.forEach(book => {
+            const li = document.createElement('li');
+            li.textContent = `${book.title} by ${book.author} (${book.year}) - Genre: ${book.genre}`;
+            booksList.appendChild(li);
+        });
+    } else {
+        alert('Failed to load books. Unauthorized.');
+    }
+}
+
+        // Load books when the page is loaded
+        window.onload = loadBooks;
+    </script>
+</body>
+</html>

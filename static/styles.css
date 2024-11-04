@@ -1,0 +1,39 @@
+/* Basic styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+/* Navigation */
+nav {
+    background: #35424a;
+    padding: 10px;
+}
+
+nav a {
+    color: #ffffff;
+    padding: 10px;
+    text-decoration: none;
+}
+
+/* Headings */
+h1 {
+    text-align: center;
+}
+
+/* Buttons */
+button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
